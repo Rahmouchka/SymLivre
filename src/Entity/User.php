@@ -127,6 +127,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    #[ORM\Column(nullable: true)]
+    private ?string $resetCode = null;
+
+    public function getResetCode(): ?string
+    {
+        return $this->resetCode;
+    }
+
+    public function setResetCode(?string $resetCode): self
+    {
+        $this->resetCode = $resetCode;
+        return $this;
+    }
+
 
     public function getPrenom(): ?string
     {
