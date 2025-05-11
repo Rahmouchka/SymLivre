@@ -6,6 +6,7 @@ use App\Entity\Livre;
 use App\Form\LivreType;
 use App\Repository\LivreRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +16,23 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LivreController extends AbstractController
 {
     #[Route(name: 'app_livre_index', methods: ['GET'])]
-    public function index(LivreRepository $livreRepository): Response
+    function index(LivreRepository $livreRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        return $this->render('livre/index.html.twig', [
-            'livres' => $livreRepository->findAll(),
-        ]);
-    }
+    $searchTerm = $request->query->get('search');
+
+    $query = $livreRepository->findBySearchQuery($searchTerm);
+
+    $livres = $paginator->paginate(
+        $query, /* Résultats à paginer */
+        $request->query->getInt('page', 1), /* Numéro de page */
+        12 /* Limite par page */
+    );
+
+    return $this->render('livre/index.html.twig', [
+        'livres' => $livres,
+        'searchTerm' => $searchTerm,
+    ]);
+}
 
     #[Route('/new', name: 'app_livre_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

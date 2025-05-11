@@ -15,7 +15,25 @@ class LivreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Livre::class);
     }
+    /**
+     * Recherche des livres en fonction d'un terme de recherche
+     *
+     * @param string|null $searchTerm
+     * @return \Doctrine\ORM\Query
+     */
+    public function findBySearchQuery(?string $searchTerm)
+    {
+        $queryBuilder = $this->createQueryBuilder('l');
+        //QueryBuilder est un outil de Doctrine pour construire dynamiquement des requêtes SQL.
+        if ($searchTerm) {
+            $queryBuilder
+                ->where('l.titre LIKE :searchTerm')
+                ->orWhere('l.editeur LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
 
+        return $queryBuilder->orderBy('l.id', 'DESC')->getQuery();
+    }
     //    /**
     //     * @return Livre[] Returns an array of Livre objects
     //     */

@@ -44,6 +44,12 @@ class Livre
     #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'livre')]
     private Collection $ligneCommandes;
 
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $isbn = null;
+
     public function __construct()
     {
         $this->ligneCommandes = new ArrayCollection();
@@ -164,6 +170,30 @@ class Livre
                 $ligneCommande->setLivre(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getIsbn(): ?string
+    {
+        return $this->isbn;
+    }
+
+    public function setIsbn(string $isbn): static
+    {
+        $this->isbn = $isbn;
 
         return $this;
     }
