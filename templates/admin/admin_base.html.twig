@@ -12,34 +12,23 @@
             <div class="d-flex justify-content-between align-items-center">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Vendre ses livres</a>
+                        <a class="nav-link" href="{{ path('admin_dashboard') }}">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Blog</a>
+                        <a class="nav-link" href="{{ path('admin_livre_index') }}">Gestion Livre</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Fidélité</a>
+                        <a class="nav-link" href="{{ path('admin_categorie_index') }}">Gestion Categorie</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Carte cadeaux</a>
+                        <a class="nav-link" href="{{ path('admin_commande_index') }}">Gestion Commande </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Qui sommes-nous</a>
+                        <a class="nav-link" href="{{ path('admin_user_index') }}">Gestion User</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Aide</a>
-                    </li>
+
                 </ul>
-                <div class="user-actions">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-person icon"></i>
-                        <span class="d-none d-md-inline">Mon compte</span>
-                    </a>
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-heart icon"></i>
-                        <span class="d-none d-md-inline">Wishlist</span>
-                    </a>
-                </div>
+
             </div>
         </div>
     </div>
@@ -56,13 +45,6 @@
                 </div>
                 <div class="col-md-6">
                     <!-- Espace pour la barre de recherche dans index.html.twig -->
-                </div>
-                <div class="col-md-3 d-flex justify-content-end">
-                    <a href="#" class="btn btn-outline-primary cart-btn">
-                        <i class="bi bi-cart3 cart-icon"></i>
-                        <span>Panier</span>
-                        <span class="cart-count">0</span>
-                    </a>
                 </div>
             </div>
         </div>

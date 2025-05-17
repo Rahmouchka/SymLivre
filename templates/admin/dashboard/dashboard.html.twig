@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/admin_base.html.twig' %}
 
 {% block title %}Statistiques des Ventes{% endblock %}
 
@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}
-
 {% block body %}
     <div class="top-books-container">
         <h3 class="section-title">Livres les plus vendus</h3>
@@ -130,30 +129,37 @@
             }
         };
 
+        function createBarChart(ctx, labels, data, label, color) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: color,
+                        borderColor: color.replace('0.7', '1'),
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        hoverBackgroundColor: color.replace('0.7', '0.9')
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
         // Graphe par catégorie
-        fetch('/dashboard/data')
-            .then(response => response.json())
+        fetch('/admin/dashboard/data')
+            .then(response => {
+                if (!response.ok) throw new Error(response.status);
+                return response.json();
+            })
             .then(data => {
                 const labels = data.map(item => item.category);
                 const values = data.map(item => parseInt(item.totalSold));
 
                 const ctx = document.getElementById('categoryChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Livres vendus',
-                            data: values,
-                            backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            hoverBackgroundColor: 'rgba(75, 192, 192, 0.9)'
-                        }]
-                    },
-                    options: chartOptions
-                });
+                createBarChart(ctx, labels, values, 'Livres vendus par catégorie', 'rgba(54, 162, 235, 0.7)');
             })
             .catch(error => {
                 console.error('Erreur lors du chargement des données par catégorie:', error);
@@ -162,29 +168,17 @@
             });
 
         // Graphe par auteur
-        fetch('/dashboard/data/auteurs')
-            .then(response => response.json())
+        fetch('/admin/dashboard/data/auteurs')
+            .then(response => {
+                if (!response.ok) throw new Error(response.status);
+                return response.json();
+            })
             .then(data => {
                 const labels = data.map(item => item.author);
                 const values = data.map(item => parseInt(item.totalSold));
 
                 const ctx = document.getElementById('authorChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Livres vendus',
-                            data: values,
-                            backgroundColor: 'rgba(153, 102, 255, 0.7)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            hoverBackgroundColor: 'rgba(153, 102, 255, 0.9)'
-                        }]
-                    },
-                    options: chartOptions
-                });
+                createBarChart(ctx, labels, values, 'Livres vendus par auteur', 'rgba(153, 102, 255, 0.7)');
             })
             .catch(error => {
                 console.error('Erreur lors du chargement des données par auteur:', error);

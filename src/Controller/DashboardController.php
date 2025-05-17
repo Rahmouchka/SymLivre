@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractController
 {
     // Page principale avec le graphe
-    #[Route('/dashboard', name: 'dashboard')]
+    #[Route('admin/dashboard', name: 'admin_dashboard')]
     public function dashboard(EntityManagerInterface $em): Response
     {
         $qb = $em->createQueryBuilder();
@@ -32,13 +32,13 @@ class DashboardController extends AbstractController
 
         $topBooks = $qb->getQuery()->getResult();
 
-        return $this->render('dashboard/dashboard.html.twig', [
+        return $this->render('admin/dashboard/dashboard.html.twig', [
             'topBooks' => $topBooks
         ]);
     }
 
     // Route pour renvoyer les données des ventes par catégorie
-    #[Route('/dashboard/data', name: 'dashboard_data')]
+    #[Route('admin/dashboard/data', name: 'admin_dashboard_data')]
     public function getCategorySalesData(EntityManagerInterface $em): JsonResponse
     {
         $qb = $em->createQueryBuilder();
@@ -53,7 +53,7 @@ class DashboardController extends AbstractController
 
         return new JsonResponse($results);
     }
-    #[Route('/dashboard/data/auteurs', name: 'dashboard_data_authors')]
+    #[Route('admin/dashboard/data/auteurs', name: 'admin_dashboard_data_authors')]
     public function getAuthorSalesData(EntityManagerInterface $em): JsonResponse
     {
         $qb = $em->createQueryBuilder();

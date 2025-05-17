@@ -1,4 +1,4 @@
-{% extends '../../base.html.twig' %}
+{% extends 'admin/admin_base.html.twig' %}
 
 {% block title %}Categorie index{% endblock %}
 
@@ -23,8 +23,8 @@
                 <td>{{ categorie.slug }}</td>
                 <td>{{ categorie.description }}</td>
                 <td>
-                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">show</a>
-                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
+                    <a href="{{ path('admin_categorie_show', {'id': categorie.id}) }}">show</a>
+                    <a href="{{ path('admin_categorie_edit', {'id': categorie.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -35,5 +35,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_categorie_new') }}">Create new</a>
+    <a href="{{ path('admin_categorie_new') }}">Create new</a>
 {% endblock %}
