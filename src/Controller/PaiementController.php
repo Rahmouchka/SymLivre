@@ -14,14 +14,14 @@ class PaiementController extends AbstractController
     public function index(): Response
     {
         return $this->render('paiement/paiement.html.twig', [
-            'stripe_public_key' => 'pk_test_51RNd4wADgS5ZYWcqrY4yvnoIDVwERv839qmOAz04XJLBMmJkh1g98Y40fZCk0BHsx85jn1K3bGaG4icEoSIsyFa000YEMrvqi3',
+            'stripe_public_key' => $_ENV['STRIPE_PUBLIC_KEY'],
         ]);
     }
 
     #[Route('/create-checkout-session', name: 'create_checkout_session', methods: ['POST'])]
     public function createCheckoutSession(): JsonResponse
     {
-        \Stripe\Stripe::setApiKey('sk_test_51RNd4wADgS5ZYWcqYpsjDqplZA7bO7Fjm7hs7PX2aHGtejb9AkE78EpBq3biSd9Jx2Z9kWNImRgkNcokJRUYqJgM00U6k55Ueb');
+        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
         $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
