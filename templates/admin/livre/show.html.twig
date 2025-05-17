@@ -1,6 +1,6 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/admin_base.html.twig' %}
 
-{% block title %}{{ livre.titre }}{% endblock %}
+{% block title %}Admin - {{ livre.titre }}{% endblock %}
 
 {% block body %}
     <div class="container py-4">
@@ -67,10 +67,10 @@
 
             <div class="card-footer d-flex justify-content-between">
                 <div>
-                    <a href="{{ path('app_livre_index') }}" class="btn btn-secondary me-2">
+                    <a href="{{ path('admin_livre_index') }}" class="btn btn-secondary me-2">
                         <i class="fas fa-arrow-left me-1"></i> Retour à la liste
                     </a>
-                    <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-warning">
+                    <a href="{{ path('admin_livre_edit', {'id': livre.id}) }}" class="btn btn-warning">
                         <i class="fas fa-edit me-1"></i> Modifier
                     </a>
                 </div>
