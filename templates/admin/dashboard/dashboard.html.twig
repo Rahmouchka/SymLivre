@@ -1,0 +1,191 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Statistiques des Ventes{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+{% block body %}
+    <div class="top-books-container">
+        <h3 class="section-title">Livres les plus vendus</h3>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for book in topBooks %}
+                <div class="col">
+                    <div class="book-card card h-100 position-relative">
+                        <div class="ranking-ribbon ranking-{{ loop.index }}">
+                            <span class="ranking-number">{{ loop.index }}</span>
+                            <span class="ranking-text">
+                            {% if loop.index == 1 %}
+                                <i class="fas fa-trophy"></i> 1<sup>er</sup>
+                            {% else %}
+                                {{ loop.index }}<sup>e</sup>
+                            {% endif %}
+                        </span>
+                        </div>
+
+                        <div class="book-image-container">
+                            <img src="{{ book.image }}" class="card-img-top" alt="{{ book.titre }}">
+                            <div class="book-badge">
+                                <span class="badge bg-primary">{{ book.totalSold }} vendu{{ book.totalSold > 1 ? 's' : '' }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.titre }}</h5>
+                                <p class="card-text text-muted">{{ book.editeur }}</p>
+                                <p class="card-text fw-bold">{{ book.prix }} DT</p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                    <span class="category-tag">{{ book.categorie }}</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="display-5 fw-bold text-center text-md-start">Statistiques des Ventes</h1>
+            <p class="text-muted">Visualisez les performances de vos livres par catégorie et par auteur.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="chart-container">
+                    <h2>Par Catégorie</h2>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="chart-container">
+                    <h2>Par Auteur</h2>
+                    <canvas id="authorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Configuration commune pour les graphiques
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    padding: 10,
+                    cornerRadius: 4,
+                    displayColors: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                        }
+                    }
+                }
+            }
+        };
+
+        function createBarChart(ctx, labels, data, label, color) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: color,
+                        borderColor: color.replace('0.7', '1'),
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        hoverBackgroundColor: color.replace('0.7', '0.9')
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
+        // Graphe par catégorie
+        fetch('/admin/dashboard/data')
+            .then(response => {
+                if (!response.ok) throw new Error(response.status);
+                return response.json();
+            })
+            .then(data => {
+                const labels = data.map(item => item.category);
+                const values = data.map(item => parseInt(item.totalSold));
+
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                createBarChart(ctx, labels, values, 'Livres vendus par catégorie', 'rgba(54, 162, 235, 0.7)');
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des données par catégorie:', error);
+                document.getElementById('categoryChart').parentNode.innerHTML =
+                    '<div class="alert alert-danger">Erreur lors du chargement des données</div>';
+            });
+
+        // Graphe par auteur
+        fetch('/admin/dashboard/data/auteurs')
+            .then(response => {
+                if (!response.ok) throw new Error(response.status);
+                return response.json();
+            })
+            .then(data => {
+                const labels = data.map(item => item.author);
+                const values = data.map(item => parseInt(item.totalSold));
+
+                const ctx = document.getElementById('authorChart').getContext('2d');
+                createBarChart(ctx, labels, values, 'Livres vendus par auteur', 'rgba(153, 102, 255, 0.7)');
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des données par auteur:', error);
+                document.getElementById('authorChart').parentNode.innerHTML =
+                    '<div class="alert alert-danger">Erreur lors du chargement des données</div>';
+            });
+
+
+    </script>
+{% endblock %}

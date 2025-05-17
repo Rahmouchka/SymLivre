@@ -1,4 +1,4 @@
-{% extends '../../base.html.twig' %}
+{% extends 'admin/admin_base.html.twig' %}
 
 {% block title %}User index{% endblock %}
 
@@ -24,15 +24,15 @@
             <tr>
                 <td>{{ user.id }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                <td>{{ user.roles|join(', ') }}</td>
                 <td>{{ user.password }}</td>
                 <td>{{ user.nom }}</td>
                 <td>{{ user.prenom }}</td>
                 <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
                 <td>{{ user.resetCode }}</td>
                 <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                    <a href="{{ path('admin_user_show', {'id': user.id}) }}">show</a>
+                    <a href="{{ path('admin_user_edit', {'id': user.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -43,5 +43,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_user_new') }}">Create new</a>
+    <a href="{{ path('admin_user_new') }}">Create new</a>
 {% endblock %}

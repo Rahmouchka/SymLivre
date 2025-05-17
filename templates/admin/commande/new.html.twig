@@ -1,11 +1,11 @@
-{% extends '../../base.html.twig' %}
+{% extends 'admin/admin_base.html.twig' %}
 
 {% block title %}New Commande{% endblock %}
 
 {% block body %}
     <h1>Create new Commande</h1>
 
-    {{ include('commande/_form.html.twig') }}
+    {{ include('admin/commande/_form.html.twig') }}
 
-    <a href="{{ path('app_commande_index') }}">back to list</a>
+    <a href="{{ path('admin_commande_index') }}">back to list</a>
 {% endblock %}
