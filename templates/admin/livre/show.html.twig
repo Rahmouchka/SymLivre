@@ -1,0 +1,81 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Admin - {{ livre.titre }}{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">{{ livre.titre }}</h1>
+                <span class="badge bg-light text-primary">{{ livre.prix|number_format(2, ',', ' ') }} €</span>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <!-- Image du livre (si disponible) -->
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        {% if livre.image %}
+                            <img src="{{ livre.image }}" alt="{{ livre.titre }}" class="img-fluid rounded shadow-sm">
+                        {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <i class="fas fa-book fa-4x text-secondary"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Informations du livre -->
+                    <div class="col-md-8">
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 text-primary">Résumé</h5>
+                            <p class="text-justify">{{ livre.resume|nl2br }}</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="border-bottom pb-2 text-primary">Détails</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between px-0">
+                                        <span class="fw-bold">Éditeur:</span>
+                                        <span>{{ livre.editeur }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">
+                                        <span class="fw-bold">Date d'édition:</span>
+                                        <span>{{ livre.dateEdition ? livre.dateEdition|date('d/m/Y') : 'Non spécifiée' }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">
+                                        <span class="fw-bold">Référence:</span>
+                                        <span class="text-muted">#{{ livre.id }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="col-md-6">
+                                <!-- Espace pour des informations supplémentaires comme les auteurs, catégories, etc. -->
+                                {% if livre.auteurs is defined and livre.auteurs|length > 0 %}
+                                    <h5 class="border-bottom pb-2 text-primary">Auteurs</h5>
+                                    <ul class="list-group list-group-flush">
+                                        {% for auteur in livre.auteurs %}
+                                            <li class="list-group-item px-0">{{ auteur.nom }} {{ auteur.prenom }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-between">
+                <div>
+                    <a href="{{ path('admin_livre_index') }}" class="btn btn-secondary me-2">
+                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                    </a>
+                    <a href="{{ path('admin_livre_edit', {'id': livre.id}) }}" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i> Modifier
+                    </a>
+                </div>
+                {{ include('livre/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

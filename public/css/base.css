@@ -1,0 +1,219 @@
+:root {
+    --primary: #ffb5a7; /* Rose pâle */
+    --primary-light: #fec89a; /* Pêche */
+    --secondary: #8bd3d6; /* Turquoise clair */
+    --secondary-light: #b8e0d2; /* Menthe */
+    --accent: #ffd166; /* Jaune */
+    --light: #fff9f5; /* Blanc cassé */
+    --dark: #2D3436; /* Gris foncé */
+    --gray: #95A5A6; /* Gris moyen */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--dark);
+    background-color: #FFFFFF;
+}
+
+.top-bar {
+    background-color: var(--primary);
+    padding: 8px 0;
+}
+
+.top-bar .nav-link {
+    color: var(--dark);
+    font-size: 0.85rem;
+    font-weight: 400;
+    padding: 0.25rem 1rem;
+    transition: all 0.2s;
+}
+
+.top-bar .nav-link:hover {
+    color: var(--dark);
+    opacity: 0.8;
+}
+
+.main-header {
+    padding: 1.25rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+    background-color: white;
+}
+
+.logo {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo span {
+    color: var(--secondary);
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.category-nav {
+    background-color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 0;
+}
+
+.category-nav .nav-link {
+    color: var(--dark);
+    font-weight: 500;
+    padding: 1rem 1.25rem;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.category-nav .nav-link:hover {
+    color: var(--primary);
+}
+
+.category-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background-color: var(--primary);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+}
+
+.category-nav .nav-link:hover::after,
+.category-nav .nav-link.active::after {
+    width: 80%;
+}
+
+.btn-primary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--dark);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-light);
+    border-color: var(--secondary-light);
+    color: var(--dark);
+}
+
+.btn-outline-primary {
+    color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--dark);
+}
+
+.cart-btn {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.cart-btn:hover {
+    background-color: var(--secondary);
+    color: var(--dark);
+}
+
+.cart-icon {
+    font-size: 1.25rem;
+}
+
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--primary);
+    color: var(--dark);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-actions .nav-link {
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.user-actions .nav-link:hover {
+    color: var(--dark);
+    opacity: 0.8;
+}
+
+.user-actions .icon {
+    font-size: 1.25rem;
+}
+
+footer {
+    background-color: var(--dark);
+    color: white;
+}
+
+footer h5 {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+footer a {
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s;
+}
+
+footer a:hover {
+    color: var(--secondary);
+}
+
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+}
+
+.social-icons a:hover {
+    background-color: var(--secondary);
+    transform: translateY(-3px);
+    color: var(--dark);
+}
+
+.copyright {
+    background-color: rgba(0, 0, 0, 0.2);
+}
