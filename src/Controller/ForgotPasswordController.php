@@ -22,7 +22,7 @@ class ForgotPasswordController extends AbstractController
             $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
 
             if ($user) {
-                $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT); // 6-digit code
+                $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
                 $user->setResetCode($code);
                 $em->flush();
 
@@ -56,7 +56,7 @@ class ForgotPasswordController extends AbstractController
 
             if ($user) {
                 $user->setPassword($hasher->hashPassword($user, $newPassword));
-                $user->setResetCode(null); // Invalidate the code
+                $user->setResetCode(null);
                 $em->flush();
 
                 $this->addFlash('success', 'Password reset successful!');
