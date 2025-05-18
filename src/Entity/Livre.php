@@ -50,6 +50,9 @@ class Livre
     #[ORM\Column(length: 255)]
     private ?string $isbn = null;
 
+    #[ORM\Column]
+    private ?int $qte_en_stock = null;
+
     public function __construct()
     {
         $this->ligneCommandes = new ArrayCollection();
@@ -194,6 +197,18 @@ class Livre
     public function setIsbn(string $isbn): static
     {
         $this->isbn = $isbn;
+
+        return $this;
+    }
+
+    public function getQteEnStock(): ?int
+    {
+        return $this->qte_en_stock;
+    }
+
+    public function setQteEnStock(int $qte_en_stock): static
+    {
+        $this->qte_en_stock = $qte_en_stock;
 
         return $this;
     }
