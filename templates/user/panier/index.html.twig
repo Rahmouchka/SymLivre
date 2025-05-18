@@ -1,0 +1,197 @@
+{% extends 'user/user_base.html.twig' %}
+
+{% block title %}ReadUp - Mon Panier{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .cart-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .cart-item {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 0;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        .cart-img {
+            width: 80px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 5px;
+            background-color: white;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .quantity-control {
+            width: 120px;
+        }
+        .summary-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+        .btn-remove {
+            color: #dc3545;
+            transition: all 0.2s ease;
+        }
+        .btn-remove:hover {
+            transform: scale(1.1);
+        }
+        .empty-cart {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1 class="mb-4">Mon Panier</h1>
+
+        {% if panier|length > 0 %}
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="cart-container">
+                        {% for item in panier %}
+                            <div class="row align-items-center cart-item">
+                                <div class="col-md-2">
+                                    <img src="{{ item.livre.image }}" alt="{{ item.livre.titre }}" class="cart-img">
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="mb-1">{{ item.livre.titre }}</h5>
+                                    <p class="text-muted mb-1">{{ item.livre.editeur }}</p>
+                                    <small class="text-muted">ISBN: {{ item.livre.isbn }}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group quantity-control">
+                                        <a href="{{ path('panier_retirer', {'id': item.livre.id}) }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-dash"></i>
+                                        </a>
+                                        <input type="text" class="form-control text-center" value="{{ item.quantite }}" readonly>
+                                        <a href="{{ path('panier_ajouter', {'id': item.livre.id}) }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <strong>{{ (item.livre.prix * item.quantite)|number_format(2, ',', ' ') }} €</strong>
+                                    <div class="text-muted small">
+                                        {{ item.livre.prix|number_format(2, ',', ' ') }} € l'unité
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <a href="{{ path('panier_supprimer', {'id': item.livre.id}) }}" class="btn btn-link btn-remove" title="Supprimer">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <a href="{{ path('panier_vider') }}" class="btn btn-outline-danger">
+                                <i class="bi bi-trash me-1"></i> Vider le panier
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="summary-card">
+                        <h5 class="mb-4">Récapitulatif</h5>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Sous-total ({{ panier|length }} article{% if panier|length > 1 %}s{% endif %})</span>
+                            <span>{{ total|number_format(2, ',', ' ') }} €</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Livraison</span>
+                            <span>{{ (total > 100 ? 'Gratuite' : '8,00 €') }}</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between fw-bold fs-5 mb-4">
+                            <span>Total</span>
+                            <span>{{ (total + (total > 100 ? 0 : 8))|number_format(2, ',', ' ') }} €</span>
+                        </div>
+
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary btn-lg">
+                                <i class="bi bi-credit-card me-2"></i> Passer la commande
+                            </a>
+                        </div>
+
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                <i class="bi bi-lock-fill me-1"></i> Paiement sécurisé
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="cart-container empty-cart">
+                <div class="text-center">
+                    <i class="bi bi-cart-x text-muted" style="font-size: 5rem;"></i>
+                    <h3 class="mt-3">Votre panier est vide</h3>
+                    <p class="text-muted">Parcourez notre catalogue pour trouver votre prochaine lecture</p>
+                    <a href="{{ path('user_livre_index') }}" class="btn btn-primary mt-3">
+                        <i class="bi bi-book me-2"></i> Voir les livres
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Confirmation avant de vider le panier
+            document.querySelectorAll('a[href*="vider"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (!confirm('Êtes-vous sûr de vouloir vider votre panier ?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Confirmation avant de supprimer un article
+            document.querySelectorAll('.btn-remove').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (!confirm('Supprimer cet article de votre panier ?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Animation lors de la modification de quantité
+            document.querySelectorAll('.quantity-control a').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const input = this.closest('.input-group').querySelector('input');
+                    input.classList.add('bg-warning', 'bg-opacity-10');
+                    setTimeout(() => {
+                        input.classList.remove('bg-warning', 'bg-opacity-10');
+                    }, 500);
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -370,10 +370,13 @@
 
                 <!-- Action Buttons Below the Image -->
                 <div class="action-buttons">
-                    <button class="btn btn-primary btn-add-to-cart"
+                    <button class="btn btn-primary btn-sm btn-add-to-cart"
                             data-book-id="{{ livre.id }}"
-                            {{ livre.qteEnStock <= 0 ? 'disabled title="Ce produit est actuellement en rupture de stock"' : '' }}>
-                        <i class="bi bi-cart-plus me-2"></i> Ajouter au panier
+                            {{ livre.qteEnStock <= 0 ? 'disabled' : '' }}
+                            data-bs-toggle="tooltip"
+                            title="{{ livre.qteEnStock <= 0 ? 'Produit en rupture de stock' : 'Ajouter au panier' }}">
+                        <i class="bi bi-cart-plus me-1"></i>
+                        {{ livre.qteEnStock <= 0 ? 'Indisponible' : 'Ajouter' }}
                     </button>
                     <button class="btn btn-outline-secondary">
                         <i class="bi bi-heart me-2"></i> Favoris
@@ -478,53 +481,42 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Gestion de l'ajout au panier
             const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
-
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
+                    if (this.disabled) return;
+
                     const bookId = this.getAttribute('data-book-id');
-                    const buttonText = this.querySelector('.btn-text');
                     const icon = this.querySelector('i');
 
-                    // Sauvegarder le contenu original
-                    const originalHTML = this.innerHTML;
+                    // Animation visuelle
+                    icon.classList.remove('bi-cart-plus');
+                    icon.classList.add('bi-check');
 
-                    // Animation de feedback
-                    this.innerHTML = '<i class="bi bi-check me-2"></i> Ajouté !';
-                    this.classList.add('btn-success');
-                    this.classList.remove('btn-primary', 'btn-outline-primary');
-
-                    // Désactiver temporairement le bouton
-                    this.disabled = true;
-
-                    // Envoyer la requête AJAX (à implémenter)
+                    // Envoi AJAX
                     fetch(`/panier/ajouter/${bookId}`, {
                         method: 'POST',
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Content-Type': 'application/json'
+                            'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
                         .then(response => response.json())
                         .then(data => {
-                            // Mettre à jour le compteur du panier
-                            if(data.success) {
-                                const cartCount = document.querySelector('.cart-count');
-                                if(cartCount) {
-                                    cartCount.textContent = data.cartCount;
-                                }
+                            // Mise à jour du compteur
+                            const cartCount = document.querySelector('.cart-count');
+                            if (cartCount) {
+                                cartCount.textContent = data.count;
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
 
-                    // Réinitialiser après 2 secondes
-                    setTimeout(() => {
-                        this.innerHTML = originalHTML;
-                        this.classList.remove('btn-success');
-                        this.classList.add('primary' in this.classList ? 'btn-primary' : 'btn-outline-primary');
-                        this.disabled = false;
-                    }, 2000);
+                            // Notification
+                            const toast = new bootstrap.Toast(document.getElementById('cartToast'));
+                            toast.show();
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                icon.classList.remove('bi-check');
+                                icon.classList.add('bi-cart-plus');
+                            }, 2000);
+                        });
                 });
             });
         });
@@ -532,44 +524,3 @@
 {% endblock %}
 
 
-
-{#
-<!-- Section livres similaires -->
-{% if similarBooks is defined and similarBooks|length > 0 %}
-    <div class="mb-5">
-        <h3 class="section-title">Livres similaires</h3>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            {% for book in similarBooks %}
-                <div class="col">
-                    <div class="book-card shadow-sm">
-                        <div class="card-img-container">
-                            {% if book.image %}
-                                <img src="{{ book.image }}" alt="Couverture {{ book.titre }}">
-                            {% else %}
-                                <div class="d-flex align-items-center justify-content-center h-100">
-                                    <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>
-                                </div>
-                            {% endif %}
-                            <span class="price-badge">{{ book.prix|number_format(2, ',', ' ') }} €</span>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ book.titre }}</h5>
-                            <p class="card-text mb-1">{{ book.editeur }}</p>
-                        </div>
-                        <div class="card-footer">
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ path('user_livre_show', {'id': book.id}) }}" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-eye me-1"></i> Détails
-                                </a>
-                                <button class="btn btn-primary btn-sm btn-add-to-cart" data-book-id="{{ book.id }}">
-                                    <i class="bi bi-cart-plus me-1"></i> Ajouter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-{% endif %}
-#}

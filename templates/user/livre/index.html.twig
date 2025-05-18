@@ -230,33 +230,44 @@
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialisation des tooltips
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-
             // Gestion de l'ajout au panier
             const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
+                    if (this.disabled) return;
+
                     const bookId = this.getAttribute('data-book-id');
-
-                    // Ici vous devrez implémenter la logique d'ajout au panier
-
-                    // Animation temporaire pour la démo
                     const icon = this.querySelector('i');
+
+                    // Animation visuelle
                     icon.classList.remove('bi-cart-plus');
                     icon.classList.add('bi-check');
 
-                    setTimeout(() => {
-                        icon.classList.remove('bi-check');
-                        icon.classList.add('bi-cart-plus');
-                    }, 2000);
+                    // Envoi AJAX
+                    fetch(`/panier/ajouter/${bookId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Mise à jour du compteur
+                            const cartCount = document.querySelector('.cart-count');
+                            if (cartCount) {
+                                cartCount.textContent = data.count;
+                            }
 
-                    // Notification visuelle
-                    const toast = new bootstrap.Toast(document.getElementById('cartToast'));
-                    toast.show();
+                            // Notification
+                            const toast = new bootstrap.Toast(document.getElementById('cartToast'));
+                            toast.show();
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                icon.classList.remove('bi-check');
+                                icon.classList.add('bi-cart-plus');
+                            }, 2000);
+                        });
                 });
             });
         });
