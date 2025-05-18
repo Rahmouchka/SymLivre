@@ -12,23 +12,34 @@
             <div class="d-flex justify-content-between align-items-center">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_dashboard') }}">Dashboard</a>
+                        <a class="nav-link" href="#">Vendre ses livres</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_livre_index') }}">Gestion Livre</a>
+                        <a class="nav-link" href="#">Blog</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_categorie_index') }}">Gestion Categorie</a>
+                        <a class="nav-link" href="#">Fidélité</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_commande_index') }}">Gestion Commande </a>
+                        <a class="nav-link" href="#">Carte cadeaux</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin_user_index') }}">Gestion User</a>
+                        <a class="nav-link" href="#">Qui sommes-nous</a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Aide</a>
+                    </li>
                 </ul>
-
+                <div class="user-actions">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-person icon"></i>
+                        <span class="d-none d-md-inline">Mon compte</span>
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-heart icon"></i>
+                        <span class="d-none d-md-inline">Wishlist</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -55,29 +66,20 @@
             <ul class="nav justify-content-center">
                 <li class="nav-item">
                     <a class="nav-link active" href="{{ path('admin_livre_index') }}">
-                        <i class="bi bi-book me-1"></i> Livres
+                        <i class="bi bi-book me-1"></i> Gestion Livres
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Meilleures ventes</a>
+                    <a class="nav-link" href="{{ path('admin_categorie_index') }}">Gestion Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Notre sélection</a>
+                    <a class="nav-link" href="{{ path('admin_commande_index') }}">Gestion Commande </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Polars & Thrillers</a>
+                    <a class="nav-link" href="{{ path('admin_user_index') }}">Gestion User</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Ados</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Young adult</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Manga</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Enfants</a>
+                    <a class="nav-link " href="{{ path('admin_dashboard') }}">Dashboard</a>
                 </li>
             </ul>
         </div>

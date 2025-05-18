@@ -3,46 +3,35 @@
 {% block title %}Admin - Livres{% endblock %}
 
 {% block body %}
-    <!-- Barre de recherche stylisée -->
+    <!-- Barre de recherche -->
     <div class="search-container">
-        <h4 class="search-title"></h4>
         <form method="get" action="{{ path('admin_livre_index') }}">
-            <div class="row g-3">
-                <div class="col-md-8">
-                    <div class="search-bar">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" name="search" class="form-control" placeholder="Rechercher par titre,éditeur..." value="{{ searchTerm ?? '' }}">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn search-btn w-100">
-                        <i class="bi bi-search me-2"></i>Rechercher
-                    </button>
-                </div>
-                {% if searchTerm %}
-                    <div class="col-md-12 text-center mt-2">
-                        <a href="{{ path('admin_livre_index') }}" class="btn reset-btn">
-                            <i class="bi bi-x-circle me-2"></i>Effacer la recherche
-                        </a>
-                    </div>
-                {% endif %}
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control form-control-lg"
+                       placeholder="Rechercher un livre par titre,éditeur..."
+                       value="{{ searchTerm ?? '' }}">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-search me-2"></i>Rechercher
+                </button>
             </div>
         </form>
     </div>
 
     <!-- En-tête de la section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="section-title">Notre catalogue</h2>
-        <a href="{{ path('admin_livre_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Ajouter un livre
-        </a>
-    </div>
+    <h2 class="section-title">
+        {% if searchTerm %}
+            Résultats de recherche
+        {% else %}
+            Notre catalogue
+        {% endif %}
+    </h2>
 
     <!-- Message de résultats de recherche -->
     {% if searchTerm %}
         <div class="alert alert-info mb-4">
             <i class="bi bi-info-circle me-2"></i>
-            Résultats de recherche pour "<strong>{{ searchTerm }}</strong>"
+            Vous avez recherché "<strong>{{ searchTerm }}</strong>"
             ({{ livres.getTotalItemCount }} livre{% if livres.getTotalItemCount > 1 %}s{% endif %} trouvé{% if livres.getTotalItemCount > 1 %}s{% endif %})
         </div>
     {% endif %}
@@ -111,25 +100,12 @@
     {% endif %}
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center">
-        {{ knp_pagination_render(livres) }}
-    </div>
-
-    <!-- Bannière promotionnelle -->
-    <div class="promo-banner">
-        <div class="row align-items-center">
-            <div class="col-lg-7 mb-4 mb-lg-0">
-                <h3>Restez informé des nouveautés</h3>
-                <p class="mb-0">Inscrivez-vous à notre newsletter pour recevoir en avant-première nos dernières sorties et offres exclusives.</p>
-            </div>
-            <div class="col-lg-5">
-                <div class="input-group">
-                    <input type="email" class="form-control" placeholder="Votre adresse email">
-                    <button class="btn btn-primary" type="button">S'inscrire</button>
-                </div>
-            </div>
+    {% if livres|length > 0 %}
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(livres) }}
         </div>
-    </div>
+    {% endif %}
+
 {% endblock %}
 
 {% block javascripts %}

@@ -2,79 +2,360 @@
 
 {% block title %}Admin - {{ livre.titre }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .book-detail-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .book-header {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #f4ff86 100%);
+            border-radius: 8px;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            z-index: 0;
+        }
+
+        .book-header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .price-tag {
+            background-color: white;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            border: 2px solid var(--primary);
+        }
+
+        .book-image-container {
+            height: 350px;
+            width: 100%;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .book-image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .book-image-container img {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .section-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.05rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .category-badge {
+            background-color: var(--primary-light);
+            color: var(--dark);
+            font-size: 0.9rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .availability {
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .availability i {
+            margin-right: 0.5rem;
+        }
+
+        .availability.text-success {
+            color: #28a745;
+        }
+
+        .availability.text-danger {
+            color: #dc3545;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+        }
+
+        .action-buttons .btn {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .book-image-container {
+                height: 280px;
+            }
+
+            .book-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .book-detail-container {
+                padding: 1rem;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .book-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .price-tag {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container py-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h1 class="h3 mb-0">{{ livre.titre }}</h1>
-                <span class="badge bg-light text-primary">{{ livre.prix|number_format(2, ',', ' ') }} €</span>
-            </div>
+    <div class="book-detail-container">
+        <!-- Header with title and price -->
+        <div class="book-header">
+            <h1>{{ livre.titre }}</h1>
+            <div class="price-tag">{{ livre.prix|number_format(2, ',', ' ') }} €</div>
+        </div>
 
-            <div class="card-body">
-                <div class="row">
-                    <!-- Image du livre (si disponible) -->
-                    <div class="col-md-4 mb-4 mb-md-0">
-                        {% if livre.image %}
-                            <img src="{{ livre.image }}" alt="{{ livre.titre }}" class="img-fluid rounded shadow-sm">
-                        {% else %}
-                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
-                                <i class="fas fa-book fa-4x text-secondary"></i>
-                            </div>
-                        {% endif %}
-                    </div>
+        <div class="row">
+            <!-- Book Image and Buttons on the Left -->
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="book-image-container">
+                    {% if livre.image %}
+                        <img src="{{ livre.image }}" alt="{{ livre.titre }}" class="img-fluid">
+                    {% else %}
+                        <i class="bi bi-book text-secondary" style="font-size: 5rem;"></i>
+                    {% endif %}
+                </div>
 
-                    <!-- Informations du livre -->
-                    <div class="col-md-8">
-                        <div class="mb-4">
-                            <h5 class="border-bottom pb-2 text-primary">Résumé</h5>
-                            <p class="text-justify">{{ livre.resume|nl2br }}</p>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="border-bottom pb-2 text-primary">Détails</h5>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between px-0">
-                                        <span class="fw-bold">Éditeur:</span>
-                                        <span>{{ livre.editeur }}</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between px-0">
-                                        <span class="fw-bold">Date d'édition:</span>
-                                        <span>{{ livre.dateEdition ? livre.dateEdition|date('d/m/Y') : 'Non spécifiée' }}</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between px-0">
-                                        <span class="fw-bold">Référence:</span>
-                                        <span class="text-muted">#{{ livre.id }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="col-md-6">
-                                <!-- Espace pour des informations supplémentaires comme les auteurs, catégories, etc. -->
-                                {% if livre.auteurs is defined and livre.auteurs|length > 0 %}
-                                    <h5 class="border-bottom pb-2 text-primary">Auteurs</h5>
-                                    <ul class="list-group list-group-flush">
-                                        {% for auteur in livre.auteurs %}
-                                            <li class="list-group-item px-0">{{ auteur.nom }} {{ auteur.prenom }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                <!-- Action Buttons Below the Image -->
+                <div class="action-buttons">
+                    <a href="{{ path('admin_livre_edit', {'id': livre.id}) }}" class="btn btn-success">
+                        <i class="bi bi-pencil me-2"></i> Modifier
+                    </a>
+                    <form method="post" action="{{ path('admin_livre_delete', {'id': livre.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+                        <button class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i> Supprimer
+                        </button>
+                    </form>
+                    <a href="{{ path('user_livre_index') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i> Retour au catalogue
+                    </a>
                 </div>
             </div>
 
-            <div class="card-footer d-flex justify-content-between">
-                <div>
-                    <a href="{{ path('admin_livre_index') }}" class="btn btn-secondary me-2">
-                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
-                    </a>
-                    <a href="{{ path('admin_livre_edit', {'id': livre.id}) }}" class="btn btn-warning">
-                        <i class="fas fa-edit me-1"></i> Modifier
-                    </a>
+            <!-- Book Details on the Right -->
+            <div class="col-lg-7">
+                <h3 class="section-title">Résumé</h3>
+                <p class="mb-4">{{ livre.resume|nl2br }}</p>
+
+                <h3 class="section-title">Détails du livre</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Éditeur</span>
+                        <span class="detail-value">{{ livre.editeur }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">ISBN</span>
+                        <span class="detail-value">{{ livre.isbn }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date d'édition</span>
+                        <span class="detail-value">
+                            {{ livre.dateEdition ? livre.dateEdition|date('d/m/Y') : 'Non spécifiée' }}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Référence</span>
+                        <span class="detail-value">#{{ livre.id }}</span>
+                    </div>
+                    {% if livre.categorie %}
+                        <div class="detail-item">
+                            <span class="detail-label">Catégorie</span>
+                            <span class="detail-value">
+                                <span class="category-badge">{{ livre.categorie.libelle }}</span>
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="detail-item">
+                        <span class="detail-label">Disponibilité</span>
+                        <span class="detail-value">
+                            {% if livre.qteEnStock > 0 %}
+                                <span class="availability text-success">
+                                    <i class="bi bi-check-circle"></i> En stock ({{ livre.qteEnStock }} disponible(s))
+                                </span>
+                            {% else %}
+                                <span class="availability text-danger">
+                                    <i class="bi bi-x-circle"></i> Rupture de stock
+                                </span>
+                            {% endif %}
+                        </span>
+                    </div>
                 </div>
-                {{ include('admin/livre/_delete_form.html.twig') }}
             </div>
         </div>
     </div>
