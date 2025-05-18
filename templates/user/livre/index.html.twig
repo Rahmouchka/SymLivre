@@ -105,45 +105,18 @@
             opacity: 0;
         }
 
-        /* Barre de recherche améliorée */
-        .search-container {
-            background-color: var(--light);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .search-container .input-group-text {
-            background-color: white;
-            border-right: none;
-        }
-
-        .search-container .form-control {
-            border-left: none;
-        }
-
-        /* Pagination personnalisée */
-        .pagination .page-item.active .page-link {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: var(--dark);
-        }
-
-        .pagination .page-link {
-            color: var(--dark);
-        }
     </style>
 {% endblock %}
 
-{% block user_body %}
+{% block body %}
     <!-- Barre de recherche -->
     <div class="search-container">
+        <h4 class="search-title">Trouvez votre prochain livre préféré</h4>
         <form method="get" action="{{ path('user_livre_index') }}">
             <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                 <input type="text" name="search" class="form-control form-control-lg"
-                       placeholder="Rechercher un livre par titre, auteur ou éditeur..."
+                       placeholder="Rechercher un livre par titre,éditeur..."
                        value="{{ searchTerm ?? '' }}">
                 <button type="submit" class="btn btn-primary px-4">
                     <i class="bi bi-search me-2"></i>Rechercher
@@ -157,7 +130,7 @@
         {% if searchTerm %}
             Résultats de recherche
         {% else %}
-            Notre sélection de livres
+            Notre catalogue
         {% endif %}
     </h2>
 
