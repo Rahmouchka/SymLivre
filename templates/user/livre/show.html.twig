@@ -149,7 +149,6 @@
 
         .availability {
             font-size: 0.95rem;
-            color: #28a745;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -157,6 +156,14 @@
 
         .availability i {
             margin-right: 0.5rem;
+        }
+
+        .availability.text-success {
+            color: #28a745;
+        }
+
+        .availability.text-danger {
+            color: #dc3545;
         }
 
         .action-buttons {
@@ -183,8 +190,7 @@
         }
 
         .btn-primary:hover {
-            background-color: var(--primary-dark);
-            border-color: var(--primary-dark);
+
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
@@ -322,6 +328,24 @@
                 font-size: 1.2rem;
             }
         }
+        .btn-primary:disabled {
+            background-color: #e0e0e0;
+            border-color: #d0d0d0;
+            color: #999;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .btn-primary:disabled::after {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            color: #dc3545;
+        }
+
+
     </style>
 {% endblock %}
 
@@ -346,7 +370,9 @@
 
                 <!-- Action Buttons Below the Image -->
                 <div class="action-buttons">
-                    <button class="btn btn-primary btn-add-to-cart" data-book-id="{{ livre.id }}">
+                    <button class="btn btn-primary btn-add-to-cart"
+                            data-book-id="{{ livre.id }}"
+                            {{ livre.qteEnStock <= 0 ? 'disabled title="Ce produit est actuellement en rupture de stock"' : '' }}>
                         <i class="bi bi-cart-plus me-2"></i> Ajouter au panier
                     </button>
                     <button class="btn btn-outline-secondary">
@@ -390,9 +416,15 @@
                     <div class="detail-item">
                         <span class="detail-label">Disponibilité</span>
                         <span class="detail-value">
-                            <span class="availability">
-                                <i class="bi bi-check-circle"></i> En stock
-                            </span>
+                            {% if livre.qteEnStock > 0 %}
+                                <span class="availability text-success">
+                                    <i class="bi bi-check-circle"></i> En stock ({{ livre.qteEnStock }} disponible(s))
+                                </span>
+                            {% else %}
+                                <span class="availability text-danger">
+                                    <i class="bi bi-x-circle"></i> Rupture de stock
+                                </span>
+                            {% endif %}
                         </span>
                     </div>
                 </div>
