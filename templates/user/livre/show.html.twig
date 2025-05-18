@@ -7,215 +7,437 @@
     <style>
         .book-detail-container {
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
         .book-header {
-            background-color: var(--primary-light);
-            padding: 2rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #f4ff86 100%);
+            border-radius: 8px;
             color: var(--dark);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            z-index: 0;
+        }
+
+        .book-header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .price-tag {
+            background-color: white;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            border: 2px solid var(--primary);
         }
 
         .book-image-container {
-            height: 400px;
-            background-color: var(--light);
+            height: 350px;
+            width: 100%;
+            background-color: #f8f9fa;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .book-image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
 
         .book-image-container img {
-            max-height: 100%;
+            height: 100%;
+            width: auto;
             max-width: 100%;
             object-fit: contain;
         }
 
-        .price-tag {
-            background-color: var(--primary);
-            color: var(--dark);
-            font-weight: 600;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            display: inline-block;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
         .section-title {
-            position: relative;
             font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
             font-weight: 700;
+            color: var(--dark);
             margin-bottom: 1.5rem;
-            display: inline-block;
+            position: relative;
+            padding-bottom: 0.5rem;
         }
 
         .section-title::after {
-            content: '';
+            content: "";
             position: absolute;
-            bottom: -10px;
+            bottom: 0;
             left: 0;
             width: 60px;
-            height: 4px;
-            background-color: var(--secondary);
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
 
         .detail-item {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .detail-label {
+            font-size: 0.85rem;
             font-weight: 600;
-            color: var(--dark);
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .detail-value {
-            color: var(--gray);
+            font-size: 1.05rem;
+            color: var(--dark);
+            font-weight: 500;
         }
 
         .category-badge {
-            background-color: var(--secondary-light);
+            background-color: var(--primary-light);
             color: var(--dark);
-            padding: 0.35rem 0.75rem;
-            border-radius: 50px;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
             display: inline-block;
+            font-weight: 600;
+        }
+
+        .availability {
+            font-size: 0.95rem;
+            color: #28a745;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .availability i {
+            margin-right: 0.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         .action-buttons .btn {
-            min-width: 150px;
+            font-size: 1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Styles for Livres similaires section */
+        .similar-books-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .book-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-img-container {
+            position: relative;
+            height: 200px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .card-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .price-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            color: var(--dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-footer {
+            padding: 0.75rem 1.25rem;
+            background-color: transparent;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .card-footer .btn {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .book-image-container {
+                height: 280px;
+            }
+
+            .book-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .book-detail-container {
+                padding: 1rem;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .book-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .price-tag {
+                font-size: 1.2rem;
+            }
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="book-detail-container mb-5">
-        <!-- En-tête avec le titre et le prix -->
-        <div class="book-header text-center">
-            <h1 class="mb-3">{{ livre.titre }}</h1>
-            <div class="price-tag h4 mb-0">
-                {{ livre.prix|number_format(2, ',', ' ') }} €
-            </div>
+    <div class="book-detail-container">
+        <!-- Header with title and price -->
+        <div class="book-header">
+            <h1>{{ livre.titre }}</h1>
+            <div class="price-tag">{{ livre.prix|number_format(2, ',', ' ') }} €</div>
         </div>
 
-        <div class="p-4 p-md-5">
-            <div class="row">
-                <!-- Colonne de l'image -->
-                <div class="col-md-5 mb-4 mb-md-0">
-                    <div class="book-image-container shadow-sm">
-                        {% if livre.image %}
-                            <img src="{{ livre.image }}" alt="{{ livre.titre }}" class="img-fluid">
-                        {% else %}
-                            <i class="bi bi-book text-secondary" style="font-size: 5rem;"></i>
-                        {% endif %}
-                    </div>
+        <div class="row">
+            <!-- Book Image and Buttons on the Left -->
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="book-image-container">
+                    {% if livre.image %}
+                        <img src="{{ livre.image }}" alt="{{ livre.titre }}" class="img-fluid">
+                    {% else %}
+                        <i class="bi bi-book text-secondary" style="font-size: 5rem;"></i>
+                    {% endif %}
                 </div>
 
-                <!-- Colonne des détails -->
-                <div class="col-md-7">
-                    <h3 class="section-title">Résumé</h3>
-                    <p class="mb-4">{{ livre.resume|nl2br }}</p>
+                <!-- Action Buttons Below the Image -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary btn-add-to-cart" data-book-id="{{ livre.id }}">
+                        <i class="bi bi-cart-plus me-2"></i> Ajouter au panier
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-heart me-2"></i> Favoris
+                    </button>
+                    <a href="{{ path('user_livre_index') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i> Retour au catalogue
+                    </a>
+                </div>
+            </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3 class="section-title">Détails</h3>
-                            <div class="detail-item">
-                                <div class="detail-label">Éditeur</div>
-                                <div class="detail-value">{{ livre.editeur }}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">ISBN</div>
-                                <div class="detail-value">{{ livre.isbn }}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Date d'édition</div>
-                                <div class="detail-value">
-                                    {{ livre.dateEdition ? livre.dateEdition|date('d/m/Y') : 'Non spécifiée' }}
-                                </div>
-                            </div>
-                        </div>
+            <!-- Book Details on the Right -->
+            <div class="col-lg-7">
+                <h3 class="section-title">Résumé</h3>
+                <p class="mb-4">{{ livre.resume|nl2br }}</p>
 
-                        <div class="col-md-6">
-                            {% if livre.categories is defined and livre.categories|length > 0 %}
-                                <h3 class="section-title">Catégories</h3>
-                                <div class="mb-4">
-                                    {% for categorie in livre.categories %}
-                                        <span class="category-badge">{{ categorie.libelle }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-
-                            <h3 class="section-title">Disponibilité</h3>
-                            <div class="alert alert-success d-inline-block">
-                                <i class="bi bi-check-circle me-2"></i> En stock
-                            </div>
-                        </div>
+                <h3 class="section-title">Détails du livre</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Éditeur</span>
+                        <span class="detail-value">{{ livre.editeur }}</span>
                     </div>
-
-                    <!-- Boutons d'action -->
-                    <div class="action-buttons mt-4 pt-3 d-flex flex-wrap gap-3">
-                        <a href="{{ path('user_livre_index') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-arrow-left me-2"></i> Retour au catalogue
-                        </a>
-                        <button class="btn btn-primary btn-add-to-cart" data-book-id="{{ livre.id }}">
-                            <i class="bi bi-cart-plus me-2"></i> Ajouter au panier
-                        </button>
-                        <button class="btn btn-outline-secondary">
-                            <i class="bi bi-heart me-2"></i> Favoris
-                        </button>
+                    <div class="detail-item">
+                        <span class="detail-label">ISBN</span>
+                        <span class="detail-value">{{ livre.isbn }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date d'édition</span>
+                        <span class="detail-value">
+                            {{ livre.dateEdition ? livre.dateEdition|date('d/m/Y') : 'Non spécifiée' }}
+                        </span>
+                    </div>
+                    {% if livre.categorie %}
+                        <div class="detail-item">
+                            <span class="detail-label">Catégorie</span>
+                            <span class="detail-value">
+                                <span class="category-badge">{{ livre.categorie.libelle }}</span>
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="detail-item">
+                        <span class="detail-label">Disponibilité</span>
+                        <span class="detail-value">
+                            <span class="availability">
+                                <i class="bi bi-check-circle"></i> En stock
+                            </span>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Section livres similaires -->
-    {% if similarBooks is defined and similarBooks|length > 0 %}
-        <div class="mb-5">
-            <h3 class="section-title">Livres similaires</h3>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                {% for book in similarBooks %}
-                    <div class="col">
-                        <div class="book-card shadow-sm">
-                            <div class="card-img-container">
-                                {% if book.image %}
-                                    <img src="{{ book.image }}" alt="Couverture {{ book.titre }}">
-                                {% else %}
-                                    <div class="d-flex align-items-center justify-content-center h-100">
-                                        <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>
+        <!-- Section livres similaires -->
+        {% if similarBooks is defined and similarBooks|length > 0 %}
+            <div class="similar-books-section">
+                <h3 class="section-title">Livres similaires</h3>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                    {% for book in similarBooks %}
+                        {% if book.id != livre.id %} {# Exclure le livre actuel #}
+                            <div class="col">
+                                <div class="book-card">
+                                    <div class="card-img-container">
+                                        {% if book.image %}
+                                            <img src="{{ book.image }}" alt="Couverture {{ book.titre }}">
+                                        {% else %}
+                                            <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>
+                                        {% endif %}
+                                        <span class="price-badge">{{ book.prix|number_format(2, ',', ' ') }} €</span>
                                     </div>
-                                {% endif %}
-                                <span class="price-badge">{{ book.prix|number_format(2, ',', ' ') }} €</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ book.titre }}</h5>
-                                <p class="card-text mb-1">{{ book.editeur }}</p>
-                            </div>
-                            <div class="card-footer">
-                                <div class="d-flex justify-content-between">
-                                    <a href="{{ path('user_livre_show', {'id': book.id}) }}" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-eye me-1"></i> Détails
-                                    </a>
-                                    <button class="btn btn-primary btn-sm btn-add-to-cart" data-book-id="{{ book.id }}">
-                                        <i class="bi bi-cart-plus me-1"></i> Ajouter
-                                    </button>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ book.titre }}</h5>
+                                        <p class="card-text">{{ book.editeur }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex justify-content-between">
+                                            <a href="{{ path('user_livre_show', {'id': book.id}) }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye me-1"></i> Détails
+                                            </a>
+                                            <button class="btn btn-primary btn-sm btn-add-to-cart" data-book-id="{{ book.id }}">
+                                                <i class="bi bi-cart-plus me-1"></i> Ajouter
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
@@ -224,32 +446,98 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Gestion de l'ajout au panier
             const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const bookId = this.getAttribute('data-book-id');
-
-                    // Ici vous devrez implémenter la logique d'ajout au panier
-                    // Par exemple avec une requête AJAX vers votre endpoint d'ajout au panier
-
-                    // Animation temporaire pour la démo
+                    const buttonText = this.querySelector('.btn-text');
                     const icon = this.querySelector('i');
-                    const originalText = this.innerHTML;
 
+                    // Sauvegarder le contenu original
+                    const originalHTML = this.innerHTML;
+
+                    // Animation de feedback
                     this.innerHTML = '<i class="bi bi-check me-2"></i> Ajouté !';
                     this.classList.add('btn-success');
-                    this.classList.remove('btn-primary');
+                    this.classList.remove('btn-primary', 'btn-outline-primary');
 
+                    // Désactiver temporairement le bouton
+                    this.disabled = true;
+
+                    // Envoyer la requête AJAX (à implémenter)
+                    fetch(`/panier/ajouter/${bookId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Mettre à jour le compteur du panier
+                            if(data.success) {
+                                const cartCount = document.querySelector('.cart-count');
+                                if(cartCount) {
+                                    cartCount.textContent = data.cartCount;
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+
+                    // Réinitialiser après 2 secondes
                     setTimeout(() => {
-                        this.innerHTML = originalText;
+                        this.innerHTML = originalHTML;
                         this.classList.remove('btn-success');
-                        this.classList.add('btn-primary');
+                        this.classList.add('primary' in this.classList ? 'btn-primary' : 'btn-outline-primary');
+                        this.disabled = false;
                     }, 2000);
-
-                    // Notification visuelle
-                    const toast = new bootstrap.Toast(document.getElementById('cartToast'));
-                    toast.show();
                 });
             });
         });
     </script>
 {% endblock %}
+
+
+
+{#
+<!-- Section livres similaires -->
+{% if similarBooks is defined and similarBooks|length > 0 %}
+    <div class="mb-5">
+        <h3 class="section-title">Livres similaires</h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for book in similarBooks %}
+                <div class="col">
+                    <div class="book-card shadow-sm">
+                        <div class="card-img-container">
+                            {% if book.image %}
+                                <img src="{{ book.image }}" alt="Couverture {{ book.titre }}">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            <span class="price-badge">{{ book.prix|number_format(2, ',', ' ') }} €</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.titre }}</h5>
+                            <p class="card-text mb-1">{{ book.editeur }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('user_livre_show', {'id': book.id}) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye me-1"></i> Détails
+                                </a>
+                                <button class="btn btn-primary btn-sm btn-add-to-cart" data-book-id="{{ book.id }}">
+                                    <i class="bi bi-cart-plus me-1"></i> Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+#}
