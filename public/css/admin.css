@@ -196,64 +196,6 @@
     color: var(--dark);
 }
 
-/* Styles pour la bannière promotionnelle */
-.promo-banner {
-    background: linear-gradient(135deg, #8bd3d6 0%, #b8e0d2 100%);
-    border-radius: 10px;
-    padding: 40px;
-    margin-top: 60px;
-    color: var(--dark);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.promo-banner h3 {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.promo-banner .form-control {
-    height: 54px;
-    border-radius: 27px 0 0 27px;
-    border: none;
-    padding-left: 20px;
-}
-
-.promo-banner .btn {
-    border-radius: 0 27px 27px 0;
-    background-color: #ffb5a7;
-    border: none;
-    height: 54px;
-    font-weight: 500;
-    color: var(--dark);
-}
-
-.promo-banner .btn:hover {
-    background-color: #fec89a;
-}
-
-/* Styles pour la pagination */
-.pagination {
-    margin-top: 40px;
-}
-
-.pagination .page-link {
-    color: #8bd3d6;
-    border-color: #dee2e6;
-    margin: 0 5px;
-    border-radius: 5px;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #8bd3d6;
-    border-color: #8bd3d6;
-    color: var(--dark);
-}
-
-.pagination .page-link:hover {
-    background-color: #f0f0f0;
-    color: #8bd3d6;
-}
 
 /* Styles pour les alertes */
 .alert-info {
