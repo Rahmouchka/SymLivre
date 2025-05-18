@@ -11,18 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/commande')]
+#[Route('admin/commande')]
 final class CommandeController extends AbstractController
 {
-    #[Route(name: 'app_commande_index', methods: ['GET'])]
+    #[Route(name: 'admin_commande_index', methods: ['GET'])]
     public function index(CommandeRepository $commandeRepository): Response
     {
-        return $this->render('commande/index.html.twig', [
+        return $this->render('admin/commande/index.html.twig', [
             'commandes' => $commandeRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'app_commande_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'admin_commande_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $commande = new Commande();
@@ -33,24 +33,24 @@ final class CommandeController extends AbstractController
             $entityManager->persist($commande);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_commande_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('commande/new.html.twig', [
+        return $this->render('admin/commande/new.html.twig', [
             'commande' => $commande,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_commande_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'admin_commande_show', methods: ['GET'])]
     public function show(Commande $commande): Response
     {
-        return $this->render('commande/show.html.twig', [
+        return $this->render('admin/commande/show.html.twig', [
             'commande' => $commande,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_commande_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'admin_commande_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CommandeType::class, $commande);
@@ -59,16 +59,16 @@ final class CommandeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_commande_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('commande/edit.html.twig', [
+        return $this->render('admin/commande/edit.html.twig', [
             'commande' => $commande,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'admin_commande_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->getPayload()->getString('_token'))) {
@@ -76,6 +76,6 @@ final class CommandeController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_commande_index', [], Response::HTTP_SEE_OTHER);
     }
 }
