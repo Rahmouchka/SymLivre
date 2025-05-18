@@ -132,9 +132,11 @@
                         </div>
 
                         <div class="d-grid">
-                            <a href="#" class="btn btn-primary btn-lg">
-                                <i class="bi bi-credit-card me-2"></i> Passer la commande
-                            </a>
+                            <form action="{{ path('user_commande_confirmer') }}" method="POST">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-credit-card me-2"></i> Passer la commande
+                                </button>
+                            </form>
                         </div>
 
                         <div class="mt-3 text-center">

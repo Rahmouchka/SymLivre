@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Controller\user;
-
+use App\Entity\LigneCommande;
 use App\Entity\Commande;
-use App\Form\CommandeType;
+use App\Service\PanierService;
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,29 +29,8 @@ final class CommandeController extends AbstractController
             'commande' => $commande,
         ]);
     }
-    /*
-    #[Route('/user/panier/ajouter/{id}', name: 'panier_ajouter')]
-    public function ajouterLivre(PanierService $panierService, int $id): Response
-    {
-        $panierService->ajouter($id);
 
-        $this->addFlash('success', 'Livre ajouté au panier.');
-
-        return $this->redirectToRoute('user_livre_index');
-    }
-    #[Route('/user/panier', name: 'panier_afficher')]
-    public function afficherPanier(PanierService $panierService): Response
-    {
-        $panierComplet = $panierService->getPanierComplet();
-        $total = $panierService->getTotal();
-
-        return $this->render('user/panier/afficher.html.twig', [
-            'panier' => $panierComplet,
-            'total' => $total,
-        ]);
-    }
-
-    #[Route('/user/commande/confirmer', name: 'user_commande_confirmer', methods: ['POST'])]
+    #[Route('/confirmer', name: 'user_commande_confirmer', methods: ['POST'])]
     public function confirmerCommande(
         PanierService $panierService,
         EntityManagerInterface $em
@@ -59,39 +38,78 @@ final class CommandeController extends AbstractController
         $panier = $panierService->getPanierComplet();
         $total = $panierService->getTotal();
 
-        // Exemple de persistance d'une commande
+        if (empty($panier)) {
+            $this->addFlash('error', 'Le panier est vide.');
+            return $this->redirectToRoute('user_livre_index');
+        }
+
         $commande = new Commande();
         $commande->setDateCommande(new \DateTime());
         $commande->setPrixTotal($total);
         $commande->setStatus('PENDING');
+        $commande->setModePaiement('non spécifié');
+
+        $em->persist($commande);
 
         foreach ($panier as $item) {
             $ligneCommande = new LigneCommande();
             $ligneCommande->setLivre($item['livre']);
             $ligneCommande->setQuantite($item['quantite']);
             $ligneCommande->setPrixUnitaire($item['livre']->getPrix());
+            $ligneCommande->setCommande($commande);
 
             $commande->addLigneCommande($ligneCommande);
             $em->persist($ligneCommande);
         }
 
-        $em->persist($commande);
         $em->flush();
 
-        // Vider le panier
+
+
+        $this->addFlash('success', 'Commande créée ! Choisissez votre mode de paiement.');
+
+        // Redirection vers page de choix du mode paiement
+        return $this->redirectToRoute('mode_paiement', ['id' => $commande->getId()]);
+    }
+    #[Route('/paiement/{id}', name: 'mode_paiement', methods: ['GET', 'POST'])]
+    public function modePaiement(PanierService $panierService, Request $request, Commande $commande, EntityManagerInterface $em): Response
+    {
         $panierService->vider();
 
-        return $this->redirectToRoute('user_commande_confirmation', [
-            'id' => $commande->getId()
+        if ($request->isMethod('POST')) {
+            $modePaiement = $request->request->get('modePaiement');
+
+            if ($modePaiement === 'livraison') {
+                $commande->setModePaiement('livraison');
+                $commande->setStatus('CONFIRMED');
+                $em->flush();
+
+                $this->addFlash('success', 'Commande confirmée. Paiement à la livraison.');
+                return $this->redirectToRoute('user_livre_index');
+            }
+            else {
+                $this->addFlash('error', 'Veuillez choisir "À la livraison" pour valider cette méthode.');
+                return $this->redirectToRoute('mode_paiement', ['id' => $commande->getId()]);
+            }
+        }
+
+        return $this->render('paiement/paiement.html.twig', [
+            'commande' => $commande,
+            'stripe_public_key' => $_ENV['STRIPE_PUBLIC_KEY'],
+        ]);
+    }
+    #[Route('/mes-commandes', name: 'user_commandes')]
+    public function mesCommandes(): Response
+    {
+        $user = $this->getUser();
+
+
+
+        $commandes = $user->getCommandes();
+
+        return $this->render('commandes/index.html.twig', [
+            'commandes' => $commandes,
         ]);
     }
 
-    #[Route('/user/commande/confirmation/{id}', name: 'user_commande_confirmation', methods: ['GET'])]
-    public function afficherConfirmation(Commande $commande): Response
-    {
-        return $this->render('user/commande/confirmation.html.twig', [
-            'commande' => $commande,
-        ]);
-    }
-    */
 }

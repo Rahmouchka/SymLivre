@@ -1,23 +1,156 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paiement{% endblock %}
+{% block title %}Choisissez votre mode de paiement{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .payment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .payment-title {
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #333;
+        }
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .payment-method {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .payment-method:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-method.selected {
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        .payment-method-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #555;
+            width: 40px;
+            text-align: center;
+        }
+        .payment-method-details {
+            flex-grow: 1;
+        }
+        .payment-method-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        .payment-method-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .payment-actions {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        .btn-pay {
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            min-width: 200px;
+        }
+        @media (max-width: 576px) {
+            .payment-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Confirmer votre paiement</h1>
-    <button id="checkout-button">Acheter</button>
+    <div class="payment-container">
+        <h1 class="payment-title">Choisissez votre mode de paiement</h1>
+
+        <div class="payment-methods">
+            <div id="method-delivery" class="payment-method" data-method="livraison">
+                <div class="payment-method-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="payment-method-details">
+                    <div class="payment-method-title">Paiement à la livraison</div>
+                    <div class="payment-method-description">Payez en espèces ou par carte lors de la réception de votre commande</div>
+                </div>
+            </div>
+
+            <div id="method-card" class="payment-method" data-method="carte">
+                <div class="payment-method-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="payment-method-details">
+                    <div class="payment-method-title">Paiement par carte bancaire</div>
+                    <div class="payment-method-description">Paiement sécurisé via Stripe - Visa, Mastercard, American Express acceptés</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-actions">
+            <button id="confirm-payment" class="btn btn-primary btn-pay" disabled>Continuer</button>
+        </div>
+
+        <form method="POST" id="payment-form" class="d-none">
+            <input type="hidden" id="selected-method" name="modePaiement" value="">
+        </form>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             var stripe = Stripe('{{ stripe_public_key }}');
+            var selectedMethod = null;
+            var paymentMethods = document.querySelectorAll('.payment-method');
+            var confirmButton = document.getElementById('confirm-payment');
+            var paymentForm = document.getElementById('payment-form');
+            var selectedMethodInput = document.getElementById('selected-method');
 
-            var checkoutButton = document.getElementById('checkout-button');
+            // Sélection du mode de paiement
+            paymentMethods.forEach(function(method) {
+                method.addEventListener('click', function() {
+                    // Retirer la classe selected de tous les modes
+                    paymentMethods.forEach(function(m) {
+                        m.classList.remove('selected');
+                    });
 
-            if (checkoutButton) {
-                checkoutButton.addEventListener('click', function () {
-                    fetch('/create-checkout-session', {
+                    // Ajouter la classe selected au mode choisi
+                    this.classList.add('selected');
+                    selectedMethod = this.dataset.method;
+                    selectedMethodInput.value = selectedMethod;
+
+                    // Activer le bouton de confirmation
+                    confirmButton.removeAttribute('disabled');
+                });
+            });
+
+            // Action du bouton de confirmation
+            confirmButton.addEventListener('click', function() {
+                if (!selectedMethod) return;
+
+                if (selectedMethod === 'livraison') {
+                    // Soumettre le formulaire pour le paiement à la livraison
+                    selectedMethodInput.value = 'livraison';
+                    paymentForm.submit();
+                } else if (selectedMethod === 'carte') {
+                    // Traitement Stripe pour le paiement par carte
+                    fetch('/create-checkout-session/{{ commande.id }}', {
                         method: 'POST',
                     })
                         .then(function(response) {
@@ -34,10 +167,8 @@
                         .catch(function(error) {
                             console.error('Error:', error);
                         });
-                });
-            } else {
-                console.error('checkout-button introuvable dans le DOM');
-            }
+                }
+            });
         });
     </script>
 {% endblock %}

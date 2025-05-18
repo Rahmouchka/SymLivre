@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Commande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +18,8 @@ class PaiementController extends AbstractController
         ]);
     }
 
-    #[Route('/create-checkout-session', name: 'create_checkout_session', methods: ['POST'])]
-    public function createCheckoutSession(): JsonResponse
+    #[Route('/create-checkout-session/{id}', name: 'create_checkout_session')]
+    public function createCheckoutSession(Commande $commande): JsonResponse
     {
         \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
@@ -29,9 +29,9 @@ class PaiementController extends AbstractController
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
-                        'name' => 'Livre',
+                        'name' => 'Commande #' . $commande->getId(),
                     ],
-                    'unit_amount' => 2000,
+                    'unit_amount' => intval($commande->getPrixTotal() * 100), // en centimes
                 ],
                 'quantity' => 1,
             ]],
@@ -43,15 +43,16 @@ class PaiementController extends AbstractController
         return new JsonResponse(['id' => $session->id]);
     }
 
+
     #[Route('/payment-success', name: 'payment_success')]
     public function success(): Response
     {
-        return $this->render('stripe/success.html.twig');
+        return $this->render('paiement/success.html.twig');
     }
 
     #[Route('/payment-cancel', name: 'payment_cancel')]
     public function cancel(): Response
     {
-        return $this->render('stripe/cancel.html.twig');
+        return $this->render('paiement/cancel.html.twig');
     }
 }
